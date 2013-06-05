@@ -1,0 +1,8 @@
+user
+  name:slavik
+
+#menu
+#  main friends photo
+#  "some string"
+
+= user/name
