@@ -1,6 +1,9 @@
 user
   name:slavik
 
+send :struct 
+
+
 struct name=user
   key[] = str "name"
   value[] = str "slavik"
@@ -8,6 +11,10 @@ struct name=user
 ##########################
 
 = b 1 ? "first" : "second"
+
+##########################
+= "slavik"
+print(str slavik)
 
 print 
   "first" if int b == 1
