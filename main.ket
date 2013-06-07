@@ -1,14 +1,25 @@
 user
   name:slavik
 
+struct name=user
+  key[] = str "name"
+  value[] = str "slavik"
+
+##########################
+
+= b 1 ? "first" : "second"
+
+print 
+  "first" if int b == 1
+  else "second" if int b == 1
+
+
+- a b c | x
+  = x
+
 - a 1 ?
   = "slavik"
 |
   = "barthez"
-
-= b 1 ? "first" : "second"
-
-- a b c | x
-  = x
 
 = user/name
