@@ -16,4 +16,4 @@ File.open("try.go", 'w') do |file|
 end
 
 `go build try.go`
-`rm try.go`
+#`rm try.go`
