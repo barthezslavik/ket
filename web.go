@@ -21,7 +21,8 @@ func output(file_name string) string {
   dat, err := ioutil.ReadFile(pwd + "/" + file_name)
   check(err)
 
-  return string(dat)
+  result := fmt.Sprint("<pre>", string(dat), "</pre>")
+  return result
 }
 
 func main() {
