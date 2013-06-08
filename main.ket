@@ -1,13 +1,6 @@
 user
   name:slavik
 
-send :struct 
-
-
-struct name=user
-  key[] = str "name"
-  value[] = str "slavik"
-
 ##########################
 
 = b 1 ? "first" : "second"
