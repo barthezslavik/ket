@@ -1,0 +1,3 @@
+#!/bin/sh
+./parse $1
+go run /tmp/$1.go
