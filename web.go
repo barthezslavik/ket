@@ -22,7 +22,7 @@ func output(file_name string) string {
     return ""
   }
 
-  file_name = strings.Replace(file_name, ".ket", ".go", -1)
+  file_name = strings.Replace(file_name, ".ket", "", -1)
   dateCmd := exec.Command(pwd + "/run", file_name)
   dateOut, err := dateCmd.Output()
   check(err)
