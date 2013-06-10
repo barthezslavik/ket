@@ -1,2 +1,5 @@
 user
-  name:slavik
+  first
+    second
+      name:slavik
+      age:21
