@@ -1,0 +1,5 @@
+root("user")
+child("first", 1)
+child("second", 2)
+child_value("name","slavik")
+child_value("age",21)

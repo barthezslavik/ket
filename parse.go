@@ -28,6 +28,7 @@ func parse() {
       symbols := []byte(line)
       deep := 0
       for _,symbol := range symbols {
+        // if child
         if(symbol == 32) {
           deep++
         }
@@ -73,4 +74,4 @@ func main() {
         err := ioutil.WriteFile("/tmp/"+os.Args[1]+".go", content, 0644)
         check(err)
         */
-      }
+}
