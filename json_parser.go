@@ -17,3 +17,29 @@ func main() {
   var lines = strings.Split(string(contents), "\n")
   println(lines[0])
 }
+
+/*
+
+user
+  first
+    second
+      name:slavik
+      age:21
+  someone
+    hello
+      super:hero
+
+{"user":
+  {"first":
+    {"second":
+      {"name":"slavik","age":"21"}
+    },
+  {"someone":
+      {"hello":
+      {"super":"hero"}
+    }
+  }
+  }
+}
+
+*/
