@@ -12,11 +12,16 @@ func check(e error) {
   }
 }
 
-func build_structs() {
+func node(line string, deep int, lines[]string) string {
+  var output string = "type user struct { _name string first }"
+  return output
+}
+
+func parent() {
 
 }
 
-func assign_values() {
+func none() {
 
 }
 
@@ -24,17 +29,17 @@ func parse() {
   contents,_ := ioutil.ReadFile(os.Args[1]+".ket")
   var lines = strings.Split(string(contents), "\n")
   for _,line := range lines {
-    if(strings.Contains(line, " ")) {
-      symbols := []byte(line)
-      deep := 0
-      for _,symbol := range symbols {
-        // if child
-        if(symbol == 32) {
-          deep++
-        }
+    symbols := []byte(line)
+    deep := 0
+    for _,symbol := range symbols {
+      if(symbol == 32) {
+        deep++
       }
-      println(deep/2)
     }
+    new_node := node(line, deep, lines)
+    buffer := []byte(string(new_node))
+    err := ioutil.WriteFile("output.txt", buffer, 0644)
+    check(err)
   }
 
 }
@@ -74,4 +79,4 @@ func main() {
         err := ioutil.WriteFile("/tmp/"+os.Args[1]+".go", content, 0644)
         check(err)
         */
-}
+      }
