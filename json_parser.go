@@ -3,7 +3,7 @@ import (
   //"os"
   //"io/ioutil"
   "fmt"
-  "encoding/json"
+  //"encoding/json"
   //"strings"
 )
 
@@ -19,15 +19,20 @@ func main() {
 
   //first := //
 
-second := map[string]interface{} { "name": "slavik", "age": 21 }
-first := map[string]interface{} { "second":second }
-hello := map[string]interface{} { "super": "hero"}
-someone := map[string]interface{} { "hello":hello }
-user := map[string]interface{} { "first":first, "someone":someone }
+  var a [5]string
+  a[0] = `second  := map[string]interface{} { "name": "slavik", "age": 21 }`
+  a[1] = `hello   := map[string]interface{} { "super": "hero"}`
+  a[2] = `someone := map[string]interface{} { "hello": hello }`
+  a[3] = `first   := map[string]interface{} { "second": second }`
+  a[4] = `user    := map[string]interface{} { "first": first, "someone": someone }`
 
-j, _ := json.Marshal(user)
+  for i, j := 0, len(a)-1; i < j; i, j = i+1, j-1 {
+     a[i], a[j] = a[j], a[i]
+  }
 
-fmt.Println(string(j))
+  //j, _ := json.Marshal(user)
+
+  fmt.Println(a)
 }
 
 /*
