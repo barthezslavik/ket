@@ -9,12 +9,7 @@ func check(e error) {
   }
 }
 
-func main() {
-  a := make([]string, 0)
-  a = append(a, `
-  }`)
-  a = append(a, `
-  println(user)`)
+func parse_object(a []string) []string {
   a = append(a, `
   user    := map[string]interface{} { "first": first, "someone": someone }`)
   a = append(a, `
@@ -26,13 +21,23 @@ func main() {
   a = append(a, `
   hello   := map[string]interface{} { "super": "hero"}`)
   a = append(a, `
-  func main() {`)
+  println(user)`)
+  return a
+}
+
+func main() {
+  a := make([]string, 0)
   a = append(a, `
   package main`)
+  a = append(a, `
+  func main() {`)
+  a = parse_object(a)
+  a = append(a, `
+  }`)
 
-  for i, j := 0, len(a)-1; i < j; i, j = i+1, j-1 {
-    a[i], a[j] = a[j], a[i]
-  }
+  //for i, j := 0, len(a)-1; i < j; i, j = i+1, j-1 {
+  //  a[i], a[j] = a[j], a[i]
+  //}
 
   f, err := os.Create(os.Args[1]+".go")
   check(err)
