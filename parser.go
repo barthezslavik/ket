@@ -18,28 +18,30 @@ func main() {
   //var lines = strings.Split(string(contents), "\n")
 
   a := make([]string, 0)
-  a = append(a, `second  := map[string]interface{} { "name": "slavik", "age": 21 }`)
-  a = append(a, `hello   := map[string]interface{} { "super": "hero"}`)
-  a = append(a, `someone := map[string]interface{} { "hello": hello }`)
-  a = append(a, `first   := map[string]interface{} { "second": second }`)
-  a = append(a, `user    := map[string]interface{} { "first": first, "someone": someone }`)
+  a = append(a, `
+  second  := map[string]interface{} { "name": "slavik", "age": 21 }`)
+  a = append(a, `
+  hello   := map[string]interface{} { "super": "hero"}`)
+  a = append(a, `
+  someone := map[string]interface{} { "hello": hello }`)
+  a = append(a, `
+  first   := map[string]interface{} { "second": second }`)
+  a = append(a, `
+  user    := map[string]interface{} { "first": first, "someone": someone }`)
 
   for i, j := 0, len(a)-1; i < j; i, j = i+1, j-1 {
     a[i], a[j] = a[j], a[i]
   }
 
-  //for i := 0; i < len(a); i++ {
-  //  fmt.Println(a[i])
-    //err := ioutil.WriteFile("/tmp/www", string(a[i]), 0644)
-    //check(err)
-  //}
+  f, err := os.Create("/tmp/dat2")
+  check(err)
+  for i := 0; i < len(a); i++ {
+    f.WriteString(a[i])
+  }
   //j, _ := json.Marshal(user)
 
   //fmt.Println(a)
 
-  f, err := os.Create("/tmp/dat2")
-  check(err)
-  f.WriteString("writes\n")
 }
 
 /*
