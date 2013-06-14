@@ -7,4 +7,4 @@
   second  := map[string]interface{} { "name": "slavik", "age": 21 }
   hello   := map[string]interface{} { "super": "hero"}
   println(user)
-  }
+}

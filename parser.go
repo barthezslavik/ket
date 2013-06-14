@@ -1,6 +1,9 @@
 package main
 import (
   "os"
+  "io/ioutil"
+  "strings"
+  "fmt"
 )
 
 func check(e error) {
@@ -9,7 +12,37 @@ func check(e error) {
   }
 }
 
+func get_max(values []int) int {
+  max := 0
+  for _,v := range values {
+    if v > max {
+      max = v
+    }
+  }
+
+  return max
+}
+
 func parse_object(a []string) []string {
+  contents,_ := ioutil.ReadFile(os.Args[1]+".ket")
+  lines := strings.Split(string(contents), "\n")
+  deep_array := make([]int, 0)
+  for _,line := range lines {
+    if(strings.Contains(line, " ")) {
+      symbols := []byte(line)
+      deep := 0
+      for _,symbol := range symbols {
+        if(symbol == 32) {
+          deep++
+        }
+      }
+      //println(line)
+      deep_array = append(deep_array, deep)
+    }
+  }
+  max := get_max(deep_array)
+  fmt.Println(max)
+
   a = append(a, `
   user    := map[string]interface{} { "first": first, "someone": someone }`)
   a = append(a, `
@@ -33,32 +66,19 @@ func main() {
   func main() {`)
   a = parse_object(a)
   a = append(a, `
-  }`)
+}`)
 
-  //for i, j := 0, len(a)-1; i < j; i, j = i+1, j-1 {
-  //  a[i], a[j] = a[j], a[i]
-  //}
+//for i, j := 0, len(a)-1; i < j; i, j = i+1, j-1 {
+//  a[i], a[j] = a[j], a[i]
+//}
 
-  f, err := os.Create(os.Args[1]+".go")
-  check(err)
-  for i := 0; i < len(a); i++ {
-    f.WriteString(a[i])
-  }
-
-  //j, _ := json.Marshal(user)
-  //fmt.Println(a)
-
+f, err := os.Create(os.Args[1]+".go")
+check(err)
+for i := 0; i < len(a); i++ {
+  f.WriteString(a[i])
 }
 
-/*
+//j, _ := json.Marshal(user)
+//fmt.Println(a)
 
-user
-first
-second
-name:slavik
-age:21
-someone
-hello
-super:hero
-
-*/
+}
