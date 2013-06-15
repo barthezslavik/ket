@@ -1,9 +1,10 @@
 package main
+
 import (
   "fmt"
   //  "encoding/json"
-  //  "io/ioutil"
-  //  s "strings"
+  "io/ioutil"
+  s "strings"
   //  "os"
 )
 
@@ -23,12 +24,13 @@ func add(new_line string)[]string {
   return content
 }
 
-func init_struct() {
-  add(`user := map[string]interface{}{}`)
-  add(`first := map[string]interface{}{}`)
-  add(`someone := map[string]interface{}{}`)
-  add(`second := map[string]interface{}{}`)
-  add(`hello := map[string]interface{}{}`)
+func init_struct(lines []string) {
+  for _, line := range lines {
+    if s.Contains(line, ":") { continue }
+    if len(line) == 0 { continue }
+    line = s.Replace(line, " ", "", -1)
+    add(line+` := map[string]interface{}{}`)
+  }
 }
 
 func init_values() {
@@ -60,11 +62,11 @@ func after() {
 
 func main() {
   before()
-  init_struct()
+  contents,_ := ioutil.ReadFile(file)
+  lines := s.Split(string(contents), "\n")
+  init_struct(lines)
   init_values()
   init_relations()
   after()
-  //contents,_ := ioutil.ReadFile(file)
-  //lines := s.Split(string(contents), "\n")
   p(content)
 }
