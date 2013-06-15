@@ -1,8 +1,16 @@
 package main
 import (
   "fmt"
-  "encoding/json"
+  //  "encoding/json"
+  //  "io/ioutil"
+  //  s "strings"
+  //  "os"
 )
+
+var p = fmt.Println
+//var file = os.Args[1]+"ket"
+var file = "struct.ket"
+var content = make([]string, 0)
 
 func check(e error) {
   if e != nil {
@@ -10,29 +18,53 @@ func check(e error) {
   }
 }
 
-func dont_print(j []byte)[]byte {
-  return j
+func add(new_line string)[]string {
+  content = append(content, new_line)
+  return content
+}
+
+func init_struct() {
+  add(`user := map[string]interface{}{}`)
+  add(`first := map[string]interface{}{}`)
+  add(`someone := map[string]interface{}{}`)
+  add(`second := map[string]interface{}{}`)
+  add(`hello := map[string]interface{}{}`)
+}
+
+func init_values() {
+  add(`second["name"] = "slavik"`)
+  add(`second["age"] = 21`)
+  add(`hello["super"] = "hero"`)
+}
+
+func init_relations() {
+  add(`someone["hello"] = hello`)
+  add(`first["second"] = second`)
+  add(`user["first"] = first`)
+  add(`user["someone"] = someone`)
+}
+
+func before() {
+  add(`package main`)
+  add(`import (`)
+  add(`  "fmt")`)
+  add(`func dont_print(j []byte)[]byte {`)
+  add(` return j`)
+  add(`}`)
+}
+
+func after() {
+  add(`j, _ := json.Marshal(user)`)
+  add(`j = dont_print(j)`)
 }
 
 func main() {
-  user := map[string]interface{}{}
-  first := map[string]interface{}{}
-  someone := map[string]interface{}{}
-  second := map[string]interface{}{}
-  hello := map[string]interface{}{}
-
-  second["name"] = "slavik"
-  second["age"] = 21
-  hello["super"] = "hero"
-
-  someone["hello"] = hello
-  first["second"] = second
-  user["first"] = first
-  user["someone"] = someone
-
-  j, err := json.Marshal(user)
-  check(err)
-
-  j = dont_print(j)
-  fmt.Println(string(j))
+  before()
+  init_struct()
+  init_values()
+  init_relations()
+  after()
+  //contents,_ := ioutil.ReadFile(file)
+  //lines := s.Split(string(contents), "\n")
+  p(content)
 }
