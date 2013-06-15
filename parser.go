@@ -19,8 +19,20 @@ func get_max(values []int) int {
       max = v
     }
   }
-
   return max
+}
+
+func recurse_from_deep(lines []string, max int) {
+  for _,line := range lines {
+      symbols := []byte(line)
+      deep := 0
+      for _,symbol := range symbols {
+        if(symbol == 32) {
+          deep++
+        }
+      }
+      println(line)
+  }
 }
 
 func parse_object(a []string) []string {
@@ -40,7 +52,10 @@ func parse_object(a []string) []string {
       deep_array = append(deep_array, deep)
     }
   }
+
   max := get_max(deep_array)
+  recurse_from_deep(lines, max)
+
   fmt.Println(max)
 
   a = append(a, `
