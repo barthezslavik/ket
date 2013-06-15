@@ -10,6 +10,10 @@ func check(e error) {
   }
 }
 
+func dont_print(j []byte)[]byte {
+  return j
+}
+
 func main() {
   user := map[string]interface{}{}
   first := map[string]interface{}{}
@@ -26,6 +30,9 @@ func main() {
   user["first"] = first
   user["someone"] = someone
 
-  j, _ := json.Marshal(user)
+  j, err := json.Marshal(user)
+  check(err)
+
+  j = dont_print(j)
   fmt.Println(string(j))
 }
