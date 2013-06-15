@@ -11,33 +11,21 @@ func check(e error) {
 }
 
 func main() {
-  second  := map[string]interface{}{}
+  user := map[string]interface{}{}
+  first := map[string]interface{}{}
+  someone := map[string]interface{}{}
+  second := map[string]interface{}{}
+  hello := map[string]interface{}{}
+
   second["name"] = "slavik"
   second["age"] = 21
-  hello   := map[string]interface{}{}
   hello["super"] = "hero"
-  someone := map[string]interface{}{}
+
   someone["hello"] = hello
-  first   := map[string]interface{}{}
   first["second"] = second
-  user    := map[string]interface{}{}
   user["first"] = first
-  user["someone"] = someone
-  user["first"] = second
   user["someone"] = someone
 
   j, _ := json.Marshal(user)
   fmt.Println(string(j))
-
 }
-
-/*
-user
-  first
-    second
-      name:slavik
-      age:21
-  someone
-    hello
-      super:hero
-*/
