@@ -55,10 +55,7 @@ func build(lines []string, line string, index int, z int, f string) {
 
   if current_indent > parent_indent {
     if f == "n" { add(parent+`["`+line+`"] = `+line) }
-    if f == "k" {
-      key_value := s.Split(line, ":")
-      add(parent+`["`+key_value[0]+`"] = "`+key_value[1]+`"`)
-    }
+    if f == "k" { add(parent+`["`+s.Split(line, ":")[0]+`"] = "`+s.Split(line, ":")[1]+`"`) }
   } else {
     build(lines, line, index, z+1, f)
   }
