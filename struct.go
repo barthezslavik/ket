@@ -13,9 +13,12 @@ second := map[string]interface{}{}
 someone := map[string]interface{}{}
 hello := map[string]interface{}{}
 second["name"] = "slavik"
-name:slavik["age"] = "21"
 second["age"] = "21"
 hello["super"] = "hero"
+user["first"] = first
+first["second"] = second
+user["someone"] = someone
+someone["hello"] = hello
 j, _ := json.Marshal(user)
 j = escape_print(j)
 fmt.Println(string(j))
