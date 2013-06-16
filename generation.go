@@ -52,7 +52,7 @@ func find_parent(current_line string, lines []string) {
     parent = s.Replace(parent, " ", "", -1)
     line = s.Replace(line, " ", "", -1)
     key_value := s.Split(line, ":")
-    add(parent+`["`+key_value[0]+`"] = `+key_value[1])
+    add(parent+`["`+key_value[0]+`"] = "`+key_value[1]+`"`)
   }
 }
 
@@ -71,15 +71,21 @@ func before() {
   add(`package main`)
   add(`import (`)
   add(`  "fmt"`)
+  add(`  "encoding/json"`)
   add(`)`)
   add(`func escape_print(j []byte)[]byte {`)
   add(` return j`)
   add(`}`)
+  add(`func main() {`)
 }
 
 func after() {
   add(`j, _ := json.Marshal(user)`)
   add(`j = escape_print(j)`)
+  add(`fmt.Println(j)`)
+  add(`fmt.Println(someone)`)
+  add(`fmt.Println(first)`)
+  add(`}`)
 }
 
 func write_file() {
