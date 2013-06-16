@@ -5,12 +5,12 @@ import (
   //  "encoding/json"
   "io/ioutil"
   s "strings"
-  //  "os"
+  "os"
 )
 
 var p = fmt.Println
 //var file = os.Args[1]+"ket"
-var file = "struct.ket"
+var file = "struct"
 var content = make([]string, 0)
 
 func check(e error) {
@@ -33,40 +33,70 @@ func init_struct(lines []string) {
   }
 }
 
-func init_values() {
-  add(`second["name"] = "slavik"`)
-  add(`second["age"] = 21`)
-  add(`hello["super"] = "hero"`)
+func check_indent(line string)int {
+  chars := []byte(line)
+  indent := 0
+  for _, char := range chars {
+    if char == 32 { indent++ }
+  }
+  return indent
 }
 
-func init_relations() {
-  add(`someone["hello"] = hello`)
-  add(`first["second"] = second`)
-  add(`user["first"] = first`)
-  add(`user["someone"] = someone`)
+func find_parent(current_line string, lines []string) {
+  for index, line := range lines {
+    if current_line != line { continue }
+    current_indent := check_indent(line)
+    parent_indent := check_indent(lines[index-1])
+    if current_indent - parent_indent != 2 { continue }
+    parent := lines[index-1]
+    parent = s.Replace(parent, " ", "", -1)
+    line = s.Replace(line, " ", "", -1)
+    key_value := s.Split(line, ":")
+    add(parent+`["`+key_value[0]+`"] = `+key_value[1])
+  }
+}
+
+func init_relations(lines []string) {
+  for _, line := range lines {
+    if !s.Contains(line, ":") { continue }
+    find_parent(line, lines)
+  }
+  //add(`someone["hello"] = hello`)
+  //add(`first["second"] = second`)
+  //add(`user["first"] = first`)
+  //add(`user["someone"] = someone`)
 }
 
 func before() {
   add(`package main`)
   add(`import (`)
-  add(`  "fmt")`)
-  add(`func dont_print(j []byte)[]byte {`)
+  add(`  "fmt"`)
+  add(`)`)
+  add(`func escape_print(j []byte)[]byte {`)
   add(` return j`)
   add(`}`)
 }
 
 func after() {
   add(`j, _ := json.Marshal(user)`)
-  add(`j = dont_print(j)`)
+  add(`j = escape_print(j)`)
+}
+
+func write_file() {
+  f, _ := os.Create(file+".go")
+  for _, line := range content {
+    f.WriteString(line+"\n")
+    //p(line)
+  }
 }
 
 func main() {
   before()
-  contents,_ := ioutil.ReadFile(file)
+  contents,_ := ioutil.ReadFile(file+".ket")
   lines := s.Split(string(contents), "\n")
   init_struct(lines)
-  init_values()
-  init_relations()
+  init_relations(lines)
   after()
-  p(content)
+  write_file()
+  //p(content)
 }
