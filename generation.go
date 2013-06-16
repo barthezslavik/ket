@@ -9,6 +9,7 @@ import (
 )
 
 var p = fmt.Println
+var pp = fmt.Print
 //var file = os.Args[1]+"ket"
 var file = "struct"
 var content = make([]string, 0)
@@ -42,25 +43,40 @@ func check_indent(line string)int {
   return indent
 }
 
-func find_parent(current_line string, lines []string) {
+func clear(line string)string {
+  return s.Replace(line, " ", "", -1)
+}
+
+func build_parent(lines []string, line string, index int, z int) {
+  current_indent := check_indent(lines[index])
+  parent_indent := check_indent(lines[index-z])
+
+  parent := lines[index-z]
+  parent = clear(parent)
+  line = clear(line)
+  key_value := s.Split(line, ":")
+  add(parent+`["`+key_value[0]+`"] = "`+key_value[1]+`"`)
+
+  if current_indent > parent_indent {
+    p(parent+`["`+key_value[0]+`"] = "`+key_value[1]+`"`)
+  } else {
+    build_parent(lines, line, index, z+1)
+  }
+}
+
+func build(current_line string, lines []string) {
   for index, line := range lines {
     if current_line != line { continue }
-    current_indent := check_indent(line)
-    parent_indent := check_indent(lines[index-1])
-    if current_indent - parent_indent != 2 { continue }
-    parent := lines[index-1]
-    parent = s.Replace(parent, " ", "", -1)
-    line = s.Replace(line, " ", "", -1)
-    key_value := s.Split(line, ":")
-    add(parent+`["`+key_value[0]+`"] = "`+key_value[1]+`"`)
+    build_parent(lines, line, index, 1)
   }
 }
 
 func init_relations(lines []string) {
   for _, line := range lines {
     if !s.Contains(line, ":") { continue }
-    find_parent(line, lines)
+    build(line, lines)
   }
+
   //add(`someone["hello"] = hello`)
   //add(`first["second"] = second`)
   //add(`user["first"] = first`)
@@ -83,8 +99,6 @@ func after() {
   add(`j, _ := json.Marshal(user)`)
   add(`j = escape_print(j)`)
   add(`fmt.Println(string(j))`)
-  add(`fmt.Println(someone)`)
-  add(`fmt.Println(first)`)
   add(`}`)
 }
 
