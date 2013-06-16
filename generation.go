@@ -82,7 +82,7 @@ func before() {
 func after() {
   add(`j, _ := json.Marshal(user)`)
   add(`j = escape_print(j)`)
-  add(`fmt.Println(j)`)
+  add(`fmt.Println(string(j))`)
   add(`fmt.Println(someone)`)
   add(`fmt.Println(first)`)
   add(`}`)
