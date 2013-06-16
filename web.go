@@ -23,19 +23,15 @@ func output(file_name string) string {
   }
 
   file_name = strings.Replace(file_name, ".ket", "", -1)
-  dateCmd := exec.Command(pwd + "/run", file_name)
-  dateOut, err := dateCmd.Output()
-  check(err)
-  result := fmt.Sprint("<pre>", string(dateOut), "</pre>")
+  exec.Command(pwd + "/generation", file_name)
+  cmd := exec.Command(pwd + "/run", file_name)
+  out, err := cmd.Output()
+  //check(err)
+  result := fmt.Sprint(string(out))
   return result
 }
 
-func root() string {
-  return ""
-}
-
 func main() {
-  web.Get("/", root)
   web.Get("/(.*)", output)
   web.Run("0.0.0.0:9999")
 }
