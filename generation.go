@@ -45,7 +45,7 @@ func clear(line string)string {
   return s.Replace(line, " ", "", -1)
 }
 
-func build_parent(lines []string, line string, index int, z int) {
+func build_key_value(lines []string, line string, index int, z int) {
   current_indent := check_indent(lines[index])
   parent_indent := check_indent(lines[index-z])
   parent := lines[index-z]
@@ -56,11 +56,11 @@ func build_parent(lines []string, line string, index int, z int) {
   if current_indent > parent_indent {
     add(parent+`["`+key_value[0]+`"] = "`+key_value[1]+`"`)
   } else {
-    build_parent(lines, line, index, z+1)
+    build_key_value(lines, line, index, z+1)
   }
 }
 
-func build_parent2(lines []string, line string, index int, z int) {
+func build_node(lines []string, line string, index int, z int) {
   current_indent := check_indent(lines[index])
   if current_indent == 0 { return }
   parent_indent := check_indent(lines[index-z])
@@ -70,28 +70,14 @@ func build_parent2(lines []string, line string, index int, z int) {
   if current_indent > parent_indent {
     add(parent+`["`+line+`"] = `+line)
   } else {
-    build_parent2(lines, line, index, z+1)
-  }
-}
-
-func build(current_line string, lines []string) {
-  for index, line := range lines {
-    if current_line != line { continue }
-    build_parent(lines, line, index, 1)
-  }
-}
-
-func build2(current_line string, lines []string) {
-  for index, line := range lines {
-    if current_line != line { continue }
-    build_parent2(lines, line, index, 1)
+    build_node(lines, line, index, z+1)
   }
 }
 
 func init_values(lines []string) {
-  for _, line := range lines {
-    if s.Contains(line, ":") { build(line, lines) }
-    if !s.Contains(line, ":") { build2(line, lines) }
+  for index, line := range lines {
+    if s.Contains(line, ":") { build_key_value(lines, line, index, 1) }
+    if !s.Contains(line, ":") { build_node(lines, line, index, 1) }
   }
 }
 
