@@ -24,10 +24,10 @@ func output(file_name string) string {
 
   file_name = strings.Replace(file_name, ".ket", "", -1)
 
-  build := exec.Command(pwd + "/build", file_name)
-  build_out, err := build.Output()
-  check(err)
-  println(build_out)
+  //build := exec.Command(pwd + "/build", file_name)
+  //build_out, err := build.Output()
+  //check(err)
+  //println(build_out)
 
   run := exec.Command(pwd + "/run", file_name)
   run_out, err := run.Output()
