@@ -23,15 +23,6 @@ func add(new_line string)[]string {
   return content
 }
 
-func init_struct(lines []string) {
-  for _, line := range lines {
-    if s.Contains(line, ":") { continue }
-    if len(line) == 0 { continue }
-    line = s.Replace(line, " ", "", -1)
-    add(line+` := map[string]interface{}{}`)
-  }
-}
-
 func check_indent(line string)int {
   chars := []byte(line)
   indent := 0
@@ -61,11 +52,14 @@ func build(lines []string, line string, index int, z int, f string) {
   }
 }
 
-func init_values(lines []string) {
+func init_struct() {
+  contents,_ := ioutil.ReadFile(file+".ket")
+  lines := s.Split(string(contents), "\n")
   for index, line := range lines {
     if s.Contains(line, ":") {
       build(lines, line, index, 1, "k")
     } else {
+      if len(line)>0 { add(clear(line)+` := map[string]interface{}{}`) }
       build(lines, line, index, 1, "n")
     }
   }
@@ -99,10 +93,7 @@ func write_file() {
 
 func main() {
   before()
-  contents,_ := ioutil.ReadFile(file+".ket")
-  lines := s.Split(string(contents), "\n")
-  init_struct(lines)
-  init_values(lines)
+  init_struct()
   after()
   write_file()
 }
