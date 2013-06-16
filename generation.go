@@ -90,15 +90,8 @@ func build2(current_line string, lines []string) {
 
 func init_values(lines []string) {
   for _, line := range lines {
-    if !s.Contains(line, ":") { continue }
-    build(line, lines)
-  }
-}
-
-func init_relations(lines []string) {
-  for _, line := range lines {
-    if s.Contains(line, ":") { continue }
-    build2(line, lines)
+    if s.Contains(line, ":") { build(line, lines) }
+    if !s.Contains(line, ":") { build2(line, lines) }
   }
 }
 
@@ -134,7 +127,6 @@ func main() {
   lines := s.Split(string(contents), "\n")
   init_struct(lines)
   init_values(lines)
-  init_relations(lines)
   after()
   write_file()
 }
