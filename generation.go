@@ -45,39 +45,32 @@ func clear(line string)string {
   return s.Replace(line, " ", "", -1)
 }
 
-func build_key_value(lines []string, line string, index int, z int) {
-  current_indent := check_indent(lines[index])
-  parent_indent := check_indent(lines[index-z])
-  parent := lines[index-z]
-  parent = clear(parent)
-  line = clear(line)
-  key_value := s.Split(line, ":")
-
-  if current_indent > parent_indent {
-    add(parent+`["`+key_value[0]+`"] = "`+key_value[1]+`"`)
-  } else {
-    build_key_value(lines, line, index, z+1)
-  }
-}
-
-func build_node(lines []string, line string, index int, z int) {
+func build(lines []string, line string, index int, z int, f string) {
   current_indent := check_indent(lines[index])
   if current_indent == 0 { return }
   parent_indent := check_indent(lines[index-z])
   parent := lines[index-z]
   parent = clear(parent)
   line = clear(line)
+
   if current_indent > parent_indent {
-    add(parent+`["`+line+`"] = `+line)
+    if f == "n" { add(parent+`["`+line+`"] = `+line) }
+    if f == "k" {
+      key_value := s.Split(line, ":")
+      add(parent+`["`+key_value[0]+`"] = "`+key_value[1]+`"`)
+    }
   } else {
-    build_node(lines, line, index, z+1)
+    build(lines, line, index, z+1, f)
   }
 }
 
 func init_values(lines []string) {
   for index, line := range lines {
-    if s.Contains(line, ":") { build_key_value(lines, line, index, 1) }
-    if !s.Contains(line, ":") { build_node(lines, line, index, 1) }
+    if s.Contains(line, ":") {
+      build(lines, line, index, 1, "k")
+    } else {
+      build(lines, line, index, 1, "n")
+    }
   }
 }
 
