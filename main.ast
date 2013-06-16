@@ -2,11 +2,6 @@ user
   first
     name:slavik
 
-user := make(map[string]string)
-
-user["name"] = "slavik"
-fmt.Println(user["name"])
-
 = b 1 ? "first" : "second"
 
 - a b c | x

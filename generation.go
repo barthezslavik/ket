@@ -2,7 +2,6 @@ package main
 
 import (
   "fmt"
-  //  "encoding/json"
   "io/ioutil"
   s "strings"
   "os"
@@ -10,8 +9,7 @@ import (
 
 var p = fmt.Println
 var pp = fmt.Print
-//var file = os.Args[1]+"ket"
-var file = "struct"
+var file = os.Args[1]
 var content = make([]string, 0)
 
 func check(e error) {
@@ -95,11 +93,6 @@ func init_values(lines []string) {
     if !s.Contains(line, ":") { continue }
     build(line, lines)
   }
-
-  //add(`someone["hello"] = hello`)
-  //add(`first["second"] = second`)
-  //add(`user["first"] = first`)
-  //add(`user["someone"] = someone`)
 }
 
 func init_relations(lines []string) {
@@ -132,7 +125,6 @@ func write_file() {
   f, _ := os.Create(file+".go")
   for _, line := range content {
     f.WriteString(line+"\n")
-    //p(line)
   }
 }
 
@@ -145,5 +137,4 @@ func main() {
   init_relations(lines)
   after()
   write_file()
-  //p(content)
 }

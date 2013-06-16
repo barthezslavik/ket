@@ -1,25 +1,10 @@
-package main
-import (
-  "fmt"
-  "encoding/json"
-)
-func escape_print(j []byte)[]byte {
- return j
-}
-func main() {
-user := map[string]interface{}{}
-first := map[string]interface{}{}
-second := map[string]interface{}{}
-someone := map[string]interface{}{}
-hello := map[string]interface{}{}
-second["name"] = "slavik"
-second["age"] = "21"
-hello["super"] = "hero"
-user["first"] = first
-first["second"] = second
-user["someone"] = someone
-someone["hello"] = hello
-j, _ := json.Marshal(user)
-j = escape_print(j)
-fmt.Println(string(j))
+
+  package main
+  func main() {
+  user    := map[string]interface{} { "first": first, "someone": someone }
+  someone := map[string]interface{} { "hello": hello }
+  first   := map[string]interface{} { "second": second }
+  second  := map[string]interface{} { "name": "slavik", "age": 21 }
+  hello   := map[string]interface{} { "super": "hero"}
+  println(user)
 }
