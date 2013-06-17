@@ -70,8 +70,10 @@ func init_struct() {
 func before() {
   add(`package main`)
   add(`import (`)
-  add(`  "fmt"`)
-  add(`  "encoding/json"`)
+  if len(struct_name)>0 {
+    add(`  "fmt"`)
+    add(`  "encoding/json"`)
+  }
   add(`)`)
   add(`func escape_print(j []byte)[]byte {`)
   add(` return j`)
@@ -80,10 +82,11 @@ func before() {
 }
 
 func after() {
-
-  add(`j, _ := json.Marshal(`+struct_name+`)`)
-  add(`j = escape_print(j)`)
-  add(`fmt.Println(string(j))`)
+  if len(struct_name)>0 {
+    add(`j, _ := json.Marshal(`+struct_name+`)`)
+    add(`j = escape_print(j)`)
+    add(`fmt.Println(string(j))`)
+  }
   add(`}`)
 }
 
