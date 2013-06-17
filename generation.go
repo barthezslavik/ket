@@ -54,15 +54,22 @@ func build(lines []string, line string, index int, z int, f string) {
 }
 
 func init_struct() {
+  add(`main := map[string]interface{}{}`)
   contents,_ := ioutil.ReadFile(file+".ket")
   lines := s.Split(string(contents), "\n")
   for index, line := range lines {
     if s.Contains(line, ":") {
       build(lines, line, index, 1, "k")
+      struct_name = s.Split(line, ":")[0]
+      if s.Contains(line, ":") {
+        add(`main`+`["`+struct_name+`"] = "`+s.Split(line, ":")[1]+`"`)
+      }
     } else {
       if len(line)>0 { add(clear(line)+` := map[string]interface{}{}`) }
       build(lines, line, index, 1, "n")
-      if index == 0 { struct_name = line }
+      if index == 0 {
+        struct_name = line
+      }
     }
   }
 }
@@ -70,10 +77,10 @@ func init_struct() {
 func before() {
   add(`package main`)
   add(`import (`)
-  if len(struct_name)>0 {
+  //if len(struct_name)>0 {
     add(`  "fmt"`)
     add(`  "encoding/json"`)
-  }
+  //}
   add(`)`)
   add(`func escape_print(j []byte)[]byte {`)
   add(` return j`)
@@ -83,7 +90,7 @@ func before() {
 
 func after() {
   if len(struct_name)>0 {
-    add(`j, _ := json.Marshal(`+struct_name+`)`)
+    add(`j, _ := json.Marshal(main)`)
     add(`j = escape_print(j)`)
     add(`fmt.Println(string(j))`)
   }
