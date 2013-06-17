@@ -3,7 +3,6 @@ user
     second
       name:slavik
       age:21
-      x:y
   someone
     hello
       super:hero

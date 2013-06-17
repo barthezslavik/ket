@@ -1,3 +1,3 @@
 #!/bin/sh
-./generate $1
+./generation $1
 go run $1.go
