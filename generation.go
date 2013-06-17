@@ -11,6 +11,7 @@ var p = fmt.Println
 var pp = fmt.Print
 var file = os.Args[1]
 var content = make([]string, 0)
+var struct_name string
 
 func check(e error) {
   if e != nil {
@@ -61,6 +62,7 @@ func init_struct() {
     } else {
       if len(line)>0 { add(clear(line)+` := map[string]interface{}{}`) }
       build(lines, line, index, 1, "n")
+      if index == 0 { struct_name = line }
     }
   }
 }
@@ -78,14 +80,15 @@ func before() {
 }
 
 func after() {
-  add(`j, _ := json.Marshal(user)`)
+
+  add(`j, _ := json.Marshal(`+struct_name+`)`)
   add(`j = escape_print(j)`)
   add(`fmt.Println(string(j))`)
   add(`}`)
 }
 
 func write_file() {
-  f, _ := os.Create(file+".go")
+  f, _ := os.Create("/tmp/"+file+".go")
   for _, line := range content {
     f.WriteString(line+"\n")
   }
