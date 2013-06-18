@@ -39,7 +39,16 @@ func clear(line string)string {
 
 func build(lines []string, line string, index int, z int, f string) {
   current_indent := check_indent(lines[index])
-  if current_indent == 0 { return }
+  if current_indent == 0 {
+    if len(line)>0 {
+      if s.Contains(line, ":") {
+        add(`main["`+s.Split(line, ":")[0]+`"] = "`+s.Split(line, ":")[1]+`"`)
+      } else {
+        add(`main["`+line+`"] = `+line)
+      }
+    }
+    return
+  }
   parent_indent := check_indent(lines[index-z])
   parent := lines[index-z]
   parent = clear(parent)
@@ -47,7 +56,9 @@ func build(lines []string, line string, index int, z int, f string) {
 
   if current_indent > parent_indent {
     if f == "n" { add(parent+`["`+line+`"] = `+line) }
-    if f == "k" { add(parent+`["`+s.Split(line, ":")[0]+`"] = "`+s.Split(line, ":")[1]+`"`) }
+    if f == "k" {
+      add(parent+`["`+s.Split(line, ":")[0]+`"] = "`+s.Split(line, ":")[1]+`"`)
+    }
   } else {
     build(lines, line, index, z+1, f)
   }
@@ -60,10 +71,6 @@ func init_struct() {
   for index, line := range lines {
     if s.Contains(line, ":") {
       build(lines, line, index, 1, "k")
-      struct_name = s.Split(line, ":")[0]
-      if s.Contains(line, ":") {
-        add(`main`+`["`+struct_name+`"] = "`+s.Split(line, ":")[1]+`"`)
-      }
     } else {
       if len(line)>0 { add(clear(line)+` := map[string]interface{}{}`) }
       build(lines, line, index, 1, "n")
@@ -77,10 +84,8 @@ func init_struct() {
 func before() {
   add(`package main`)
   add(`import (`)
-  //if len(struct_name)>0 {
-    add(`  "fmt"`)
-    add(`  "encoding/json"`)
-  //}
+  add(`  "fmt"`)
+  add(`  "encoding/json"`)
   add(`)`)
   add(`func escape_print(j []byte)[]byte {`)
   add(` return j`)
@@ -89,11 +94,9 @@ func before() {
 }
 
 func after() {
-  if len(struct_name)>0 {
-    add(`j, _ := json.Marshal(main)`)
-    add(`j = escape_print(j)`)
-    add(`fmt.Println(string(j))`)
-  }
+  add(`respond, _ := json.Marshal(main)`)
+  add(`respond = escape_print(respond)`)
+  add(`fmt.Println(string(respond))`)
   add(`}`)
 }
 
