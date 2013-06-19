@@ -69,6 +69,7 @@ func init_struct() {
   contents,_ := ioutil.ReadFile(file+".ket")
   lines := s.Split(string(contents), "\n")
   for index, line := range lines {
+    if s.Contains(line, "=") { return }
     if s.Contains(line, ":") {
       build(lines, line, index, 1, "k")
     } else {
@@ -84,8 +85,15 @@ func init_struct() {
 func before() {
   add(`package main`)
   add(`import (`)
-  add(`  "fmt"`)
-  add(`  "encoding/json"`)
+
+  contents,_ := ioutil.ReadFile(file+".ket")
+  lines := s.Split(string(contents), "\n")
+  for _, line := range lines {
+    if s.Contains(line, "=") {
+      add(`  "fmt"`)
+      add(`  "encoding/json"`)
+    }
+  }
   add(`)`)
   add(`func escape_print(j []byte)[]byte {`)
   add(` return j`)
@@ -94,9 +102,16 @@ func before() {
 }
 
 func after() {
-  add(`respond, _ := json.Marshal(main)`)
-  add(`respond = escape_print(respond)`)
-  add(`fmt.Println(string(respond))`)
+  contents,_ := ioutil.ReadFile(file+".ket")
+  lines := s.Split(string(contents), "\n")
+  for _, line := range lines {
+    if s.Contains(line, "=") {
+      add(`respond, _ := json.Marshal(main["`+s.Split(line, "= ")[1]+`"])`)
+      add(`respond = escape_print(respond)`)
+      add(`fmt.Println(string(respond))`)
+    }
+  }
+
   add(`}`)
 }
 
