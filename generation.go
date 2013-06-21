@@ -106,7 +106,14 @@ func after() {
   lines := s.Split(string(contents), "\n")
   for _, line := range lines {
     if s.Contains(line, "=") {
-      add(`respond, _ := json.Marshal(main["`+s.Split(line, "= ")[1]+`"])`)
+      value := s.Split(line, "= ")[1]
+      if s.Contains(line, "/") {
+        r := s.Split(value, "/")
+        x := r[0]+`["`+r[1]+`"]`
+        add(`respond, _ := json.Marshal(`+x+`)`)
+      } else {
+        add(`respond, _ := json.Marshal(main["`+value+`"])`)
+      }
       add(`respond = escape_print(respond)`)
       add(`fmt.Println(string(respond))`)
     }
