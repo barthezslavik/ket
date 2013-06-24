@@ -27,6 +27,15 @@ func add(new_line string)[]string {
   return content
 }
 
+func add_once(new_line string)[]string {
+  var exists bool
+  for _, line := range content {
+    if new_line == line { exists = true }
+  }
+  if exists {} else { content = append(content, new_line) }
+  return content
+}
+
 func check_indent(line string)int {
   chars := []byte(line)
   indent := 0
@@ -41,9 +50,6 @@ func clear(line string)string {
 }
 
 func build(lines []string, line string, index int, z int, f string) {
-  //db, _ := sql.Open("mysql", "root:@/go_learn")
-  //defer db.Close()
-
   current_indent := check_indent(lines[index])
   if current_indent == 0 {
     if len(line)>0 {
@@ -86,6 +92,17 @@ func init_struct(lines []string) {
   }
 }
 
+func init_db(lines []string) {
+  for _, line := range lines {
+    if s.Contains(line, "db") {
+      line = s.Replace(line, "db:", "", -1)
+      params := s.Split(line, "|")
+      add(`db, _ := sql.Open("mysql", "`+params[0]+`:`+params[1]+`@/`+params[2]+`")`)
+      add(`defer db.Close()`)
+    }
+  }
+}
+
 func before(lines []string) {
   add(`package main`)
   add(`import (`)
@@ -114,7 +131,17 @@ func before(lines []string) {
 
 func after(lines []string) {
   if use_db == true {
-
+    for _, line := range lines {
+      if s.Contains(line, "=") {
+        sql_print := s.Split(line, "/")
+        table := s.Split(sql_print[0], "=")[1]
+        id := sql_print[1]
+        field := sql_print[2]
+        add_once(`var `+field+` string`)
+        add(`db.QueryRow("SELECT `+field+` FROM `+table+` WHERE id=?", `+id+`).Scan(&`+field+`)`)
+        add(`fmt.Printf(`+field+`)`)
+      }
+    }
   } else {
     for _, line := range lines {
       if s.Contains(line, "=") {
@@ -146,7 +173,7 @@ func main() {
   contents,_ := ioutil.ReadFile(file+".ket")
   lines := s.Split(string(contents), "\n")
   before(lines)
-  init_struct(lines)
+  if use_db { init_db(lines) } else { init_struct(lines) }
   after(lines)
   write_file()
 }
