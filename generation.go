@@ -129,36 +129,39 @@ func before(lines []string) {
   add(`func main() {`)
 }
 
-func after(lines []string) {
-  if use_db == true {
-    for _, line := range lines {
-      if s.Contains(line, "=") {
-        sql_print := s.Split(line, "/")
-        table := s.Split(sql_print[0], "=")[1]
-        id := sql_print[1]
-        field := sql_print[2]
-        add_once(`var `+field+` string`)
-        add(`db.QueryRow("SELECT `+field+` FROM `+table+` WHERE id=?", `+id+`).Scan(&`+field+`)`)
-        add(`fmt.Printf(`+field+`)`)
-      }
+func parse_db_query(lines []string) {
+  for _, line := range lines {
+    if s.Contains(line, "=") {
+      sql_print := s.Split(line, "/")
+      table := s.Split(sql_print[0], "=")[1]
+      id := sql_print[1]
+      field := sql_print[2]
+      add_once(`var `+field+` string`)
+      add(`db.QueryRow("SELECT `+field+` FROM `+table+` WHERE id=?", `+id+`).Scan(&`+field+`)`)
+      add(`fmt.Printf(`+field+`)`)
     }
-  } else {
-    for _, line := range lines {
-      if s.Contains(line, "=") {
-        value := s.Split(line, "= ")[1]
-        if s.Contains(line, "/") {
-          r := s.Split(value, "/")
-          x := r[0]+`["`+r[1]+`"]`
-          add(`respond, _ := json.Marshal(`+x+`)`)
-        } else {
-          add(`respond, _ := json.Marshal(main["`+value+`"])`)
-        }
-        add(`respond = escape_print(respond)`)
-        add(`fmt.Println(string(respond))`)
-      }
-    }
-
   }
+}
+
+func parse_json_query(lines []string) {
+  for _, line := range lines {
+    if s.Contains(line, "=") {
+      value := s.Split(line, "= ")[1]
+      if s.Contains(line, "/") {
+        r := s.Split(value, "/")
+        x := r[0]+`["`+r[1]+`"]`
+        add(`respond, _ := json.Marshal(`+x+`)`)
+      } else {
+        add(`respond, _ := json.Marshal(main["`+value+`"])`)
+      }
+      add(`respond = escape_print(respond)`)
+      add(`fmt.Println(string(respond))`)
+    }
+  }
+}
+
+func after(lines []string) {
+  if use_db == true { parse_db_query(lines) } else { parse_json_query(lines) }
   add(`}`)
 }
 
