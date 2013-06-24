@@ -120,9 +120,12 @@ func before(lines []string) {
 
   add(`)`)
 
-  if use_db == false {
+  if !use_db {
     add(`func escape_print(j []byte)[]byte {`)
     add(` return j`)
+    add(`}`)
+    add(`func unquote(line string)string {`)
+    add(`return line[1:len(line)-1]`)
     add(`}`)
   }
 
@@ -148,14 +151,15 @@ func parse_json_query(lines []string) {
     if s.Contains(line, "=") {
       value := s.Split(line, "= ")[1]
       if s.Contains(line, "/") {
-        r := s.Split(value, "/")
-        x := r[0]+`["`+r[1]+`"]`
-        add(`respond, _ := json.Marshal(`+x+`)`)
+        parts := s.Split(value, "/")
+        object := parts[0]+`["`+parts[1]+`"]`
+        add(`respond, _ := json.Marshal(`+object+`)`)
+        add(`fmt.Println(unquote(string(respond)))`)
       } else {
         add(`respond, _ := json.Marshal(main["`+value+`"])`)
+        add(`respond = escape_print(respond)`)
+        add(`fmt.Println(respond)`)
       }
-      add(`respond = escape_print(respond)`)
-      add(`fmt.Println(string(respond))`)
     }
   }
 }
