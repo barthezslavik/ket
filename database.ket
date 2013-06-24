@@ -1,1 +1,4 @@
 db:root||go_learn
+
+= users/1/name
+= users/2/name

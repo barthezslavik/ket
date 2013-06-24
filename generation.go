@@ -88,11 +88,19 @@ func before() {
 
   contents,_ := ioutil.ReadFile(file+".ket")
   lines := s.Split(string(contents), "\n")
+  fmt_import := false
+  json_import := false
   for _, line := range lines {
     if s.Contains(line, "=") {
-      add(`  "fmt"`)
-      add(`  "encoding/json"`)
+      fmt_import = true
+      json_import = true
     }
+  }
+  if fmt_import == true {
+    add(`  "fmt"`)
+  }
+  if json_import == true {
+    add(`  "encoding/json"`)
   }
   add(`)`)
   add(`func escape_print(j []byte)[]byte {`)
