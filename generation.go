@@ -12,6 +12,7 @@ var pp = fmt.Print
 var file = os.Args[1]
 var content = make([]string, 0)
 var struct_name string
+var use_db bool
 
 func check(e error) {
   if e != nil {
@@ -70,6 +71,7 @@ func init_struct() {
   lines := s.Split(string(contents), "\n")
   for index, line := range lines {
     if s.Contains(line, "=") { return }
+    if s.Contains(line, "db") { db(); return }
     if s.Contains(line, ":") {
       build(lines, line, index, 1, "k")
     } else {
@@ -96,37 +98,49 @@ func before() {
       json_import = true
     }
   }
-  if fmt_import == true {
-    add(`  "fmt"`)
+
+  if use_db == false {
+    //if fmt_import == true { add(`  "fmt"`) }
+    //if json_import == true { add(`  "encoding/json"`) }
   }
-  if json_import == true {
-    add(`  "encoding/json"`)
-  }
+
   add(`)`)
-  add(`func escape_print(j []byte)[]byte {`)
-  add(` return j`)
-  add(`}`)
+
+  if use_db == false {
+    add(`func escape_print(j []byte)[]byte {`)
+    add(` return j`)
+    add(`}`)
+  }
+
   add(`func main() {`)
 }
 
-func after() {
-  contents,_ := ioutil.ReadFile(file+".ket")
-  lines := s.Split(string(contents), "\n")
-  for _, line := range lines {
-    if s.Contains(line, "=") {
-      value := s.Split(line, "= ")[1]
-      if s.Contains(line, "/") {
-        r := s.Split(value, "/")
-        x := r[0]+`["`+r[1]+`"]`
-        add(`respond, _ := json.Marshal(`+x+`)`)
-      } else {
-        add(`respond, _ := json.Marshal(main["`+value+`"])`)
-      }
-      add(`respond = escape_print(respond)`)
-      add(`fmt.Println(string(respond))`)
-    }
-  }
+func db() {
+  use_db = true
+}
 
+func after() {
+  if use_db == true {
+
+  } else {
+    contents,_ := ioutil.ReadFile(file+".ket")
+    lines := s.Split(string(contents), "\n")
+    for _, line := range lines {
+      if s.Contains(line, "=") {
+        value := s.Split(line, "= ")[1]
+        if s.Contains(line, "/") {
+          r := s.Split(value, "/")
+          x := r[0]+`["`+r[1]+`"]`
+          add(`respond, _ := json.Marshal(`+x+`)`)
+        } else {
+          add(`respond, _ := json.Marshal(main["`+value+`"])`)
+        }
+        add(`respond = escape_print(respond)`)
+        add(`fmt.Println(string(respond))`)
+      }
+    }
+
+  }
   add(`}`)
 }
 
