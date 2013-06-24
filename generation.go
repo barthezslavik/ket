@@ -41,6 +41,9 @@ func clear(line string)string {
 }
 
 func build(lines []string, line string, index int, z int, f string) {
+  //db, _ := sql.Open("mysql", "root:@/go_learn")
+  //defer db.Close()
+
   current_indent := check_indent(lines[index])
   if current_indent == 0 {
     if len(line)>0 {
@@ -73,7 +76,6 @@ func init_struct() {
   lines := s.Split(string(contents), "\n")
   for index, line := range lines {
     if s.Contains(line, "=") { return }
-    if s.Contains(line, "db") { db(); return }
     if s.Contains(line, ":") {
       build(lines, line, index, 1, "k")
     } else {
@@ -93,12 +95,8 @@ func before() {
   contents,_ := ioutil.ReadFile(file+".ket")
   lines := s.Split(string(contents), "\n")
   for _, line := range lines {
-    if s.Contains(line, "db") {
-      use_db = true
-    }
-    if s.Contains(line, "=") {
-      use_json = true
-    }
+    if s.Contains(line, "db") { use_db = true }
+    //if s.Contains(line, "=") { use_json = true }
     use_fmt = true
   }
 
@@ -116,10 +114,6 @@ func before() {
   }
 
   add(`func main() {`)
-}
-
-func db() {
-  use_db = true
 }
 
 func after() {
