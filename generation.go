@@ -70,10 +70,8 @@ func build(lines []string, line string, index int, z int, f string) {
   }
 }
 
-func init_struct() {
+func init_struct(lines []string) {
   add(`main := map[string]interface{}{}`)
-  contents,_ := ioutil.ReadFile(file+".ket")
-  lines := s.Split(string(contents), "\n")
   for index, line := range lines {
     if s.Contains(line, "=") { return }
     if s.Contains(line, ":") {
@@ -88,12 +86,10 @@ func init_struct() {
   }
 }
 
-func before() {
+func before(lines []string) {
   add(`package main`)
   add(`import (`)
 
-  contents,_ := ioutil.ReadFile(file+".ket")
-  lines := s.Split(string(contents), "\n")
   for _, line := range lines {
     if s.Contains(line, "db") { use_db = true }
     //if s.Contains(line, "=") { use_json = true }
@@ -116,12 +112,10 @@ func before() {
   add(`func main() {`)
 }
 
-func after() {
+func after(lines []string) {
   if use_db == true {
 
   } else {
-    contents,_ := ioutil.ReadFile(file+".ket")
-    lines := s.Split(string(contents), "\n")
     for _, line := range lines {
       if s.Contains(line, "=") {
         value := s.Split(line, "= ")[1]
@@ -149,8 +143,10 @@ func write_file() {
 }
 
 func main() {
-  before()
-  init_struct()
-  after()
+  contents,_ := ioutil.ReadFile(file+".ket")
+  lines := s.Split(string(contents), "\n")
+  before(lines)
+  init_struct(lines)
+  after(lines)
   write_file()
 }
