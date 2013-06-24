@@ -138,7 +138,7 @@ func parse_db_query(lines []string) {
       field := sql_print[2]
       add_once(`var `+field+` string`)
       add(`db.QueryRow("SELECT `+field+` FROM `+table+` WHERE id=?", `+id+`).Scan(&`+field+`)`)
-      add(`fmt.Printf(`+field+`)`)
+      add(`fmt.Println(`+field+`)`)
     }
   }
 }
