@@ -32,7 +32,7 @@ func add_once(new_line string)[]string {
   for _, line := range content {
     if new_line == line { exists = true }
   }
-  if exists {} else { content = append(content, new_line) }
+  if !exists { content = append(content, new_line) }
   return content
 }
 
@@ -109,10 +109,10 @@ func before(lines []string) {
 
   for _, line := range lines {
     if s.Contains(line, "db") { use_db = true }
-    //if s.Contains(line, "=") { use_json = true }
-    use_fmt = true
+    if s.Contains(line, "=") && !use_db { use_json = true }
   }
 
+  if use_db || use_json { use_fmt = true }
   if use_db { add(`  "database/sql"`) }
   if use_db { add(`  _ "github.com/go-sql-driver/mysql"`) }
   if use_json { add(`  "encoding/json"`) }
