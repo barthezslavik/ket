@@ -13,6 +13,8 @@ var file = os.Args[1]
 var content = make([]string, 0)
 var struct_name string
 var use_db bool
+var use_fmt bool
+var use_json bool
 
 func check(e error) {
   if e != nil {
@@ -90,19 +92,20 @@ func before() {
 
   contents,_ := ioutil.ReadFile(file+".ket")
   lines := s.Split(string(contents), "\n")
-  fmt_import := false
-  json_import := false
   for _, line := range lines {
-    if s.Contains(line, "=") {
-      fmt_import = true
-      json_import = true
+    if s.Contains(line, "db") {
+      use_db = true
     }
+    if s.Contains(line, "=") {
+      use_json = true
+    }
+    use_fmt = true
   }
 
-  if use_db == false {
-    //if fmt_import == true { add(`  "fmt"`) }
-    //if json_import == true { add(`  "encoding/json"`) }
-  }
+  if use_db { add(`  "database/sql"`) }
+  if use_db { add(`  _ "github.com/go-sql-driver/mysql"`) }
+  if use_json { add(`  "encoding/json"`) }
+  if use_fmt { add(`  "fmt"`) }
 
   add(`)`)
 
