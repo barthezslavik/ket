@@ -137,11 +137,16 @@ func parse_db_query(lines []string) {
     if s.Contains(line, "=") {
       sql_print := s.Split(line, "/")
       table := s.Split(sql_print[0], "=")[1]
+      haml := s.Split(sql_print[0], "=")[0]
+      tag := s.Replace(haml, "%", "", -1)
       id := sql_print[1]
       field := sql_print[2]
       add_once(`var `+field+` string`)
       add(`db.QueryRow("SELECT `+field+` FROM `+table+` WHERE id=?", `+id+`).Scan(&`+field+`)`)
-      add(`fmt.Println(`+field+`)`)
+      if tag != "" { add(`fmt.Print("<`+tag+`>")`) }
+      add(`fmt.Print(`+field+`)`)
+      if tag != "" { add(`fmt.Print("</`+tag+`>")`) }
+      add(`fmt.Println()`)
     }
   }
 }

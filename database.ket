@@ -1,4 +1,4 @@
 db:root||go_learn
 
-= users/1/name
-= users/2/name
+%h1= users/1/name
+%p= users/2/name
